@@ -13,6 +13,7 @@
         id = null;
         isToggled = false;
         countdownTime = "All done!";
+        loadAudio();
       }
     }, 1000);
     return id;
@@ -28,10 +29,13 @@
       let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      if (days) countdownTime = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-      else if (hours) countdownTime = hours + "h " + minutes + "m " + seconds + "s ";
-      else if (minutes) countdownTime = minutes + "m " + seconds + "s ";
-      else countdownTime = seconds + "s ";
+      if (days)
+        countdownTime =
+          days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+      else if (hours)
+        countdownTime = hours + "h " + minutes + "m " + seconds + "s";
+      else if (minutes) countdownTime = minutes + "m " + seconds + "s";
+      else countdownTime = seconds + "s";
     }
   }
 
@@ -40,13 +44,45 @@
     if (isToggled) {
       if (id) {
         id = countDown(distance);
-      }
-      else {
+      } else {
         id = countDown(5000);
       }
     } else {
       clearInterval(id);
     }
+  }
+
+  function initAudio() {
+    try {
+      window.audioCtx = window.AudioContext || window.webkitAudioContext;
+      let audioCtx = new AudioContext();
+      return audioCtx;
+    } catch (e) {
+      alert("Web Audio API is not supported in this browser");
+    }
+  }
+
+  function loadAudio() {
+    let url = "/assets/Teemo-laugh.mp3";
+    let request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.responseType = "arraybuffer";
+    request.onload = function () {
+      let context = initAudio();
+      context.decodeAudioData(
+        request.response,
+        function (buffer) {
+          var source = context.createBufferSource();
+          source.buffer = buffer;
+          source.connect(context.destination);
+          source.start(0);
+        },
+        function () {
+          alert("Failed to decode audio file");
+        }
+      );
+    };
+    request.send();
   }
 </script>
 
@@ -67,7 +103,7 @@
 
 <main>
   <button on:click={toggle}>
-    {#if !isToggled} Start {:else} Pause {/if}
+    {#if !isToggled}Start{:else}Pause{/if}
   </button>
   <p>{countdownTime}</p>
 </main>
