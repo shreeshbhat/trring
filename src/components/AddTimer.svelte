@@ -1,8 +1,8 @@
 <script>
   import Timer from './Timer.svelte';
-  let timer;
+  let count = 0;
   function addTimer() {
-
+    count++;
   }
 </script>
 
@@ -10,6 +10,11 @@
   Add Timer
 </button>
 
+{#each Array(count) as index}
+  <Timer/>
+{/each}
 <style>
-
+  button {
+    margin-bottom: 20px;
+  }
 </style>
