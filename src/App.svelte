@@ -1,5 +1,4 @@
 <script>
-  import Timer from './components/Timer.svelte';
   import AddTimer from './components/AddTimer.svelte';
 </script>
 
@@ -13,7 +12,7 @@
 
   @media (min-width: 640px) {
     main {
-      max-width: none;
+      max-width: 500px;
     }
   }
 
@@ -21,5 +20,4 @@
 
 <main>
   <AddTimer></AddTimer>
-  <Timer></Timer>
 </main>
